@@ -1,0 +1,11 @@
+name: RandomGame
+version: 1.0
+description: Provides a custom backend for NextUniverse
+author: TheDiamondPicks
+website: http://nextuniverse.ml
+main: ml.nextuniverse.RandomGame.Main
+commands:
+ vote:
+  description: Allows a user to vote
+ mini-vote:
+  description: Allows a user to vote
