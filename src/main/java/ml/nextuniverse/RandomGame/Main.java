@@ -131,7 +131,7 @@ public class Main extends JavaPlugin implements Listener {
             }
         }).start();
 
-        jedis.publish("RandomGame", "ServerStarted");
+        jedis.publish("RandomGame", "ServerStarted;" + getConfig().getString("name"));
 
 
 
