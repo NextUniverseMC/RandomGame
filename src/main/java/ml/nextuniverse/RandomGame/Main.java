@@ -144,7 +144,6 @@ public class Main extends JavaPlugin implements Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (command.getName().equalsIgnoreCase("vote")) {
             if (sender instanceof ConsoleCommandSender) {
                 sender.sendMessage("The console cannot vote!");
             }
@@ -216,20 +215,6 @@ public class Main extends JavaPlugin implements Listener {
                 }
             }
             return true;
-        }
-        else if (command.getName().equals("mini-vote")) {
-            if (args.length == 1) {
-                if (gameVotes.containsKey(Integer.parseInt(args[0]))) {
-                    gameVotes.put(Integer.parseInt(args[0]), (gameVotes.get(Integer.parseInt(args[0]))+ 1));
-                }
-                else {
-                    gameVotes.put(Integer.parseInt(args[0]), 1);
-                }
-
-            }
-            return true;
-        }
-        return false;
     }
     private void smallerCounter() {
         task = getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
