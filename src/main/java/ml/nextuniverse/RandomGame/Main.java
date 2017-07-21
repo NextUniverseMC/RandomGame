@@ -35,6 +35,8 @@ public class Main extends JavaPlugin implements Listener {
     Jedis subscriberJedis;
     Subscriber subscriber;
 
+    int forcegame = 0;
+
     public static Inventory myInventory = Bukkit.createInventory(null, 9, "Pick what minigame you want");
 
     @Override
@@ -83,6 +85,8 @@ public class Main extends JavaPlugin implements Listener {
         }
         BufferedWriter writer = null;
         System.out.println(minigame);
+        if (forcegame != 0)
+            minigame = forcegame;
 
             try {
                 PrintWriter writer2 = new PrintWriter("newnumber.txt", "UTF-8");
@@ -144,15 +148,14 @@ public class Main extends JavaPlugin implements Listener {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (command.getName().equals("vote")) {
             if (sender instanceof ConsoleCommandSender) {
                 sender.sendMessage("The console cannot vote!");
-            }
-
-            else{
+            } else {
                 if (!mainVotes.contains(sender.getName())) {
                     mainVotes.add(sender.getName());
                     int votes = mainVotes.size();
-                    getLogger().info(""+votes);
+                    getLogger().info("" + votes);
                     getLogger().info("" + Bukkit.getOnlinePlayers().size() / 2);
                     boolean test = false;
                     if (votes >= Math.round(Bukkit.getOnlinePlayers().size() / 2)) {
@@ -164,8 +167,7 @@ public class Main extends JavaPlugin implements Listener {
                     kitpvpMeta.setDisplayName(ChatColor.AQUA + "KitPVP");
                     try {
                         kitpvpMeta.setLore(Arrays.asList(ChatColor.AQUA + gameVotes.get(1).toString() + ChatColor.GRAY + " have voted for this game."));
-                    }
-                    catch (NullPointerException e) {
+                    } catch (NullPointerException e) {
                         kitpvpMeta.setLore(Arrays.asList(ChatColor.AQUA + "0" + ChatColor.GRAY + " have voted for this game."));
                     }
                     kitpvp.setItemMeta(kitpvpMeta);
@@ -194,8 +196,7 @@ public class Main extends JavaPlugin implements Listener {
                                     }
                                 }
                             }, 1200L, 1200L);
-                        }
-                        else {
+                        } else {
                             Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "[Announcement] " + ChatColor.AQUA + sender.getName() + ChatColor.GRAY + " has just voted to switch the minigame!");
                         }
                     } else {
@@ -203,18 +204,38 @@ public class Main extends JavaPlugin implements Listener {
                         int needed = majority - votes;
 
 
-
                         sender.sendMessage(ChatColor.LIGHT_PURPLE + "[NextUniverse] " + ChatColor.GRAY + "Your vote has been noted");
                         Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "[Announcement] " + ChatColor.AQUA + sender.getName() + ChatColor.GRAY + " has just voted to switch the minigame! " + ChatColor.AQUA + needed + ChatColor.GRAY + " votes are still needed to switch!");
 
                     }
 
-                }
-                else {
+                } else {
                     sender.sendMessage(ChatColor.RED + "You have already voted!");
                 }
             }
             return true;
+        }
+        else if (command.getName().equals("forcegame")) {
+            if (!sender.hasPermission("randomgame.forcegame"))
+                sender.sendMessage(ChatColor.RED + "You do not have permission to execute this command.");
+            else {
+                if (args.length != 1)
+                    sender.sendMessage(ChatColor.RED + "Invalid arguments! Use " + ChatColor.WHITE + "/forcegame [game ID]");
+                else {
+                    try {
+                        int id = Integer.parseInt(args[0]);
+                        if (id > getConfig().getInt("amount") || id <= 0)
+                            sender.sendMessage(ChatColor.RED + "Invalid arguments! Use " + ChatColor.WHITE + "/forcegame [game ID]");
+                        else
+                            forcegame = id;
+                    }
+                    catch (NumberFormatException e) {
+                        sender.sendMessage(ChatColor.RED + "Invalid arguments! Use " + ChatColor.WHITE + "/forcegame [game ID]");
+                    }
+                }
+            }
+        }
+        return false;
     }
     private void smallerCounter() {
         task = getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
