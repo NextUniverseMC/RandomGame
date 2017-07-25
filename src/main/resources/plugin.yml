@@ -7,3 +7,5 @@ main: ml.nextuniverse.RandomGame.Main
 commands:
  vote:
   description: Allows a user to vote
+ forcegame:
+  description: Forces a certain minigame next restart.
