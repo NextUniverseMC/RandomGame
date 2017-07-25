@@ -285,7 +285,6 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     public static void dispatchShutdown() {
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
     }
     @EventHandler
