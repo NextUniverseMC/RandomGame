@@ -172,6 +172,36 @@ public class Main extends JavaPlugin implements Listener {
                     }
                     kitpvp.setItemMeta(kitpvpMeta);
                     myInventory.setItem(0, kitpvp);
+                    ItemStack creative = new ItemStack(Material.WORKBENCH, 1);
+                    ItemMeta creativeMeta = creative.getItemMeta();
+                    creativeMeta.setDisplayName(ChatColor.AQUA + "Creative");
+                    try {
+                        creativeMeta.setLore(Arrays.asList(ChatColor.AQUA + gameVotes.get(1).toString() + ChatColor.GRAY + " have voted for this game."));
+                    } catch (NullPointerException e) {
+                        creativeMeta.setLore(Arrays.asList(ChatColor.AQUA + "0" + ChatColor.GRAY + " have voted for this game."));
+                    }
+                    creative.setItemMeta(creativeMeta);
+                    myInventory.setItem(0, creative);
+                    ItemStack lostInSpace = new ItemStack(Material.IRON_BLOCK, 1);
+                    ItemMeta lisMeta = lostInSpace.getItemMeta();
+                    lisMeta.setDisplayName(ChatColor.AQUA + "Lost in Space");
+                    try {
+                        lisMeta.setLore(Arrays.asList(ChatColor.AQUA + gameVotes.get(1).toString() + ChatColor.GRAY + " have voted for this game."));
+                    } catch (NullPointerException e) {
+                        lisMeta.setLore(Arrays.asList(ChatColor.AQUA + "0" + ChatColor.GRAY + " have voted for this game."));
+                    }
+                    lostInSpace.setItemMeta(lisMeta);
+                    myInventory.setItem(0, lostInSpace);
+                    ItemStack survival = new ItemStack(Material.STONE, 1);
+                    ItemMeta survivalMeta = survival.getItemMeta();
+                    survivalMeta.setDisplayName(ChatColor.AQUA + "Survival");
+                    try {
+                        survivalMeta.setLore(Arrays.asList(ChatColor.AQUA + gameVotes.get(1).toString() + ChatColor.GRAY + " have voted for this game."));
+                    } catch (NullPointerException e) {
+                        survivalMeta.setLore(Arrays.asList(ChatColor.AQUA + "0" + ChatColor.GRAY + " have voted for this game."));
+                    }
+                    survival.setItemMeta(lisMeta);
+                    myInventory.setItem(0, survival);
                     Player p = (Player) sender;
                     p.openInventory(myInventory);
                     if (votes >= Math.round(Bukkit.getOnlinePlayers().size() / 2)) {
