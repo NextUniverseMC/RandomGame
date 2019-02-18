@@ -4,9 +4,9 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Created by TheDiamondPicks on 19/07/2017.
+ * Created by TheDiamondPicks on 14/10/2017.
  */
-public class ServerSwitchingGameEvent extends Event {
+public class CountdownStartedEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
     @Override

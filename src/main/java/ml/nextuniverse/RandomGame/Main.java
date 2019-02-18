@@ -21,12 +21,13 @@ import redis.clients.jedis.JedisPoolConfig;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Main extends JavaPlugin implements Listener {
     private static HashMap<Integer, Integer> gameVotes = new HashMap<Integer, Integer>();
     private static List<String> mainVotes = new ArrayList<String>();
     private boolean countdownStarted = false;
-    private int players = 1;
+    private int players = 0;
 
     private int task;
 
@@ -60,7 +61,6 @@ public class Main extends JavaPlugin implements Listener {
                 }
             }
         }
-        Random ran = new Random();
         double percent = votes / players;
         if (percent > 1) {
             percent = 1;
@@ -70,11 +70,16 @@ public class Main extends JavaPlugin implements Listener {
         if (willusegame <= percent) {
             yes = true;
         }
-        int amount = 2;
-        System.out.println(amount);
+        int amount = getConfig().getInt("amount");
+        getLogger().info("************ RandomGame Info ************");
+        getLogger().info("Amount of games: " + amount);
+        getLogger().info("Voted game: " + game);
+        getLogger().info("Random percentage: " + willusegame);
+        getLogger().info("Percentage of votes: " + percent);
+        getLogger().info("Players: " + players);
         int minigame;
         if (!yes) {
-            minigame = ran.nextInt(amount - 1 + 1) + 1;
+            minigame = ThreadLocalRandom.current().nextInt(1, amount + 1);
         }
         else {
             minigame = game;
@@ -84,27 +89,28 @@ public class Main extends JavaPlugin implements Listener {
             f.mkdir();
         }
         BufferedWriter writer = null;
-        System.out.println(minigame);
+        getLogger().info("Selected game: " + minigame);
+        getLogger().info("*****************************************");
         if (forcegame != 0)
             minigame = forcegame;
 
+        try {
+            PrintWriter writer2 = new PrintWriter("newnumber.txt", "UTF-8");
+            writer2.println(minigame);
+            writer2.close();
+        } catch (IOException e1) {
+            getLogger().severe("************ RANDOMGAME FATAL ERROR ************");
+            getLogger().severe("Could not write to newnumber.txt!");
+            getLogger().severe("PLEASE NOTE: This means the minigame will NOT be changed");
+            getLogger().severe("************ STACKTRACE - THIS NEEDS TO BE INSPECTED ************");
+            e1.printStackTrace();
+        } finally {
             try {
-                PrintWriter writer2 = new PrintWriter("newnumber.txt", "UTF-8");
-                writer2.println(minigame);
-                writer2.close();
-            } catch (IOException e1) {
-                getLogger().severe("************ RANDOMGAME FATAL ERROR ************");
-                getLogger().severe("Could not write to newnumber.txt!");
-                getLogger().severe("PLEASE NOTE: This means the minigame will NOT be changed");
-                getLogger().severe("************ STACKTRACE - THIS NEEDS TO BE INSPECTED ************");
-                e1.printStackTrace();
-            } finally {
-                try {
-                    writer.close();
-                } catch (Exception e) {
-                    getLogger().warning("Could not close writer!");
-                }
+                writer.close();
+            } catch (Exception e) {
+                getLogger().warning("Could not close writer!");
             }
+        }
 
     }
 
@@ -162,9 +168,9 @@ public class Main extends JavaPlugin implements Listener {
                         test = true;
                     }
                     getLogger().info("" + test);
-                    ItemStack kitpvp = new ItemStack(Material.DIAMOND_SWORD, 1);
+                    ItemStack kitpvp = new ItemStack(Material.SNOW_BALL, 1);
                     ItemMeta kitpvpMeta = kitpvp.getItemMeta();
-                    kitpvpMeta.setDisplayName(ChatColor.AQUA + "KitPVP");
+                    kitpvpMeta.setDisplayName(ChatColor.AQUA + "Paintball");
                     try {
                         kitpvpMeta.setLore(Arrays.asList(ChatColor.AQUA + gameVotes.get(1).toString() + ChatColor.GRAY + " have voted for this game."));
                     } catch (NullPointerException e) {
@@ -176,41 +182,44 @@ public class Main extends JavaPlugin implements Listener {
                     ItemMeta creativeMeta = creative.getItemMeta();
                     creativeMeta.setDisplayName(ChatColor.AQUA + "Creative");
                     try {
-                        creativeMeta.setLore(Arrays.asList(ChatColor.AQUA + gameVotes.get(1).toString() + ChatColor.GRAY + " have voted for this game."));
+                        creativeMeta.setLore(Arrays.asList(ChatColor.AQUA + gameVotes.get(2).toString() + ChatColor.GRAY + " have voted for this game."));
                     } catch (NullPointerException e) {
                         creativeMeta.setLore(Arrays.asList(ChatColor.AQUA + "0" + ChatColor.GRAY + " have voted for this game."));
                     }
                     creative.setItemMeta(creativeMeta);
-                    myInventory.setItem(0, creative);
-                    ItemStack lostInSpace = new ItemStack(Material.IRON_BLOCK, 1);
+                    myInventory.setItem(1, creative);
+                    ItemStack lostInSpace = new ItemStack(Material.IRON_SWORD, 1);
                     ItemMeta lisMeta = lostInSpace.getItemMeta();
-                    lisMeta.setDisplayName(ChatColor.AQUA + "Lost in Space");
+                    lisMeta.setDisplayName(ChatColor.AQUA + "Slasher");
                     try {
-                        lisMeta.setLore(Arrays.asList(ChatColor.AQUA + gameVotes.get(1).toString() + ChatColor.GRAY + " have voted for this game."));
+                        lisMeta.setLore(Arrays.asList(ChatColor.AQUA + gameVotes.get(3).toString() + ChatColor.GRAY + " have voted for this game."));
                     } catch (NullPointerException e) {
                         lisMeta.setLore(Arrays.asList(ChatColor.AQUA + "0" + ChatColor.GRAY + " have voted for this game."));
                     }
                     lostInSpace.setItemMeta(lisMeta);
-                    myInventory.setItem(0, lostInSpace);
-                    ItemStack survival = new ItemStack(Material.STONE, 1);
+                    myInventory.setItem(2, lostInSpace);
+                    ItemStack survival = new ItemStack(Material.MOB_SPAWNER, 1);
                     ItemMeta survivalMeta = survival.getItemMeta();
-                    survivalMeta.setDisplayName(ChatColor.AQUA + "Survival");
+                    survivalMeta.setDisplayName(ChatColor.AQUA + "Mob Arena");
                     try {
-                        survivalMeta.setLore(Arrays.asList(ChatColor.AQUA + gameVotes.get(1).toString() + ChatColor.GRAY + " have voted for this game."));
+                        survivalMeta.setLore(Arrays.asList(ChatColor.AQUA + gameVotes.get(4).toString() + ChatColor.GRAY + " have voted for this game."));
                     } catch (NullPointerException e) {
                         survivalMeta.setLore(Arrays.asList(ChatColor.AQUA + "0" + ChatColor.GRAY + " have voted for this game."));
                     }
-                    survival.setItemMeta(lisMeta);
-                    myInventory.setItem(0, survival);
+                    survival.setItemMeta(survivalMeta);
+                    myInventory.setItem(3, survival);
                     Player p = (Player) sender;
                     p.openInventory(myInventory);
-                    if (votes >= Math.round(Bukkit.getOnlinePlayers().size() / 2)) {
+
+                    players++;
+                    if (votes >= Math.ceil(((double) Bukkit.getOnlinePlayers().size()) / 2)) {
 
                         sender.sendMessage(ChatColor.LIGHT_PURPLE + "[NextUniverse] " + ChatColor.GRAY + "Your vote has been noted");
                         if (!countdownStarted) {
                             countdownStarted = true;
                             Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "[Announcement] " + ChatColor.GRAY + "A majority has been reached, the minigame will be switched in " + ChatColor.AQUA + "5" + ChatColor.GRAY + " minutes!");
-
+                            CountdownStartedEvent event = new CountdownStartedEvent();
+                            Bukkit.getPluginManager().callEvent(event);
                             task = getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
                                 int countdown = 3;
 
@@ -230,7 +239,7 @@ public class Main extends JavaPlugin implements Listener {
                             Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "[Announcement] " + ChatColor.AQUA + sender.getName() + ChatColor.GRAY + " has just voted to switch the minigame!");
                         }
                     } else {
-                        int majority = Math.round(Bukkit.getOnlinePlayers().size() / 2);
+                        int majority = (int) Math.ceil(((double)Bukkit.getOnlinePlayers().size()) / 2);
                         int needed = majority - votes;
 
 
@@ -256,13 +265,48 @@ public class Main extends JavaPlugin implements Listener {
                         int id = Integer.parseInt(args[0]);
                         if (id > getConfig().getInt("amount") || id <= 0)
                             sender.sendMessage(ChatColor.RED + "Invalid arguments! Use " + ChatColor.WHITE + "/forcegame [game ID]");
-                        else
+                        else {
                             forcegame = id;
+                            sender.sendMessage(ChatColor.AQUA + "Next time the server restarts the minigame ID will be " + ChatColor.WHITE + id);
+                        }
                     }
                     catch (NumberFormatException e) {
                         sender.sendMessage(ChatColor.RED + "Invalid arguments! Use " + ChatColor.WHITE + "/forcegame [game ID]");
                     }
                 }
+            }
+        }
+        else if (command.getName().equals("forcerestart") && sender.hasPermission("randomgame.forcerestart")) {
+            if (!countdownStarted) {
+                CountdownStartedEvent event = new CountdownStartedEvent();
+                Bukkit.getPluginManager().callEvent(event);
+                countdownStarted = true;
+                Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "[Announcement] " + ChatColor.GRAY + "A server administrator has decided to force restart the server. The minigame will be switched in " + ChatColor.AQUA + "5" + ChatColor.GRAY + " minutes!");
+
+                task = getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+                    int countdown = 3;
+
+                    public void run() {
+                        String s;
+                        if (countdown + 1 == 1) s = "";
+                        else s = "s";
+                        Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "[Announcement] " + ChatColor.GRAY + "The minigame will be switched in " + ChatColor.AQUA + (countdown + 1) + ChatColor.GRAY + " minute" + s + "!");
+                        countdown--;
+                        if (countdown == -1) {
+                            getServer().getScheduler().cancelTask(task);
+                            smallerCounter();
+                        }
+                    }
+                }, 1200L, 1200L);
+            }
+        }
+        else if (command.getName().equals("forcerestartnow") && sender.hasPermission("randomgame.forcerestart")) {
+            if (!countdownStarted) {
+                CountdownStartedEvent event = new CountdownStartedEvent();
+                Bukkit.getPluginManager().callEvent(event);
+                countdownStarted = true;
+                Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "[Announcement] " + ChatColor.GRAY + "A server administrator has decided to force restart the server. The minigame will be switched in " + ChatColor.AQUA + "1" + ChatColor.GRAY + " minute!");
+                smallerCounter();
             }
         }
         return false;
@@ -319,11 +363,10 @@ public class Main extends JavaPlugin implements Listener {
     }
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (e.getInventory().getName().equals(myInventory.getName())) {
+        if (e.getInventory().getName().equals(myInventory.getName()) && e.getCurrentItem() != null) {
             ItemStack clicked = e.getCurrentItem();
-            int s = 0;
-            if (clicked.getType() == Material.DIAMOND_SWORD)
-                s = 1;
+            int s = e.getSlot();
+            System.out.println(s);
             int i;
             try {
                 i = gameVotes.get(s);
@@ -331,7 +374,8 @@ public class Main extends JavaPlugin implements Listener {
             catch (NullPointerException ex) {
                 i = 0;
             }
-            gameVotes.put(s, i + 1);
+            System.out.println(i);
+            gameVotes.put(s + 1, i + 1);
             e.setCancelled(true);
             Player p = (Player) e.getWhoClicked();
             p.closeInventory();

@@ -9,3 +9,7 @@ commands:
   description: Allows a user to vote
  forcegame:
   description: Forces a certain minigame next restart.
+ forcerestart:
+  description: Forces a restart.
+ forcerestartnow:
+  description: Forces a restart - NOW.
